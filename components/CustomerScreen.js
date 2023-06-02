@@ -31,8 +31,33 @@ export default function App() {
       setMensage("");
     },2000)
     reset()
+    setIdSearch('');
+  };
+  const onUpdate = async (data) => {
+   
+    const response = await axios.put(`http://127.0.0.1:3000/api/clientes/${idSearch}`, {
+      nombre: data.firstName,
+      apellidos:data.lastName
+    });
+    setIsError(false);
+    setMensage("Ciente Actualizado correstamente...");
+    setTimeout(()=>{
+      setMensage("");
+    },2000);
 
   };
+  const onDelete = async (data)=>{
+    if (confirm(`Esta seguro de eliminar al cliente ${data.firstName} ${data.lastName}`)){
+      const response = await axios.delete(`http://127.0.0:3000/api/clientes/${idSearch}`);
+      setIsError(false);
+      setMensage("Cliente se ha eliminado corresctamente...");
+      setTimeout(()=>{
+        setMensage('');
+        reset();
+       },2000);
+       setIdSearch("");
+      }
+};
   const onSearch = async () => {
     const response = await axios.post(`http://127.0.0.1:3000/api/clientes/${idSearch}` );
     console.log(response.data)
@@ -112,10 +137,10 @@ export default function App() {
   </Button>
   </View>
   <View style={{flexDirection:'row',marginTop:10}}>
-  <Button icon="card-search-outline" mode="contained" onPress={() => console.log('Pressed')} style={{backgroundColor:'purple'}}>
+  <Button icon="card-search-outline" mode="contained" onPress={handleSubmit(onUpdate)} style={{backgroundColor:'purple'}}>
    Actualizar
   </Button>
-  <Button icon="card-search-outline" mode="contained" onPress={() => console.log('Pressed')} style={{backgroundColor:'purple'}}>
+  <Button icon="card-search-outline" mode="contained" onPress={handleSubmit(onDelete)} style={{backgroundColor:'purple'}}>
    Eliminar
   </Button>
   </View>
